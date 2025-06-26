@@ -1,0 +1,19 @@
+[project]
+name = "dehum"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "adafruit-circuitpython-hx711>=1.0.7",
+    "adafruit-circuitpython-si7021>=4.1.16",
+    "adafruit-extended-bus>=1.0.2",
+    "argparse>=1.4.0",
+    "circup>=2.2.2",
+    "modbus-tk>=1.1.5",
+    "rpi-gpio>=0.7.1",
+    "serial>=0.0.97",
+    "si7021>=0.1.1",
+    "smbus>=1.1.post2",
+    "trio>=0.30.0",
+]
