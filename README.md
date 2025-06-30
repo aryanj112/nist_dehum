@@ -36,6 +36,24 @@ This project is part of a NIST research initiative to log the efficiency and ope
    ```
 3. **Connect your sensors as described above.**
 
+### Alternative: Install with pip and virtual environment
+
+If you're not using `uv`, you can also install dependencies manually with `pip`:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+This creates and activates a virtual environment in `.venv/` and installs the required packages.
+
+To exit the virtual environment later:
+
+```bash
+deactivate
+```
+
 ### SFTP Setup (for remote development)
 To transfer files between your local machine and the Raspberry Pi, you can use the SFTP extension in VS Code:
 - Install the [SFTP extension](https://marketplace.visualstudio.com/items?itemName=liximomo.sftp) from the Extensions Marketplace.
@@ -89,6 +107,39 @@ You can use these methods directly in your own scripts for custom workflows.
 
 ## Troubleshooting
 - No common issues reported. If you encounter problems, check your wiring and ensure all dependencies are installed.
+
+## Manually Syncing Files to the Raspberry Pi
+
+If the SFTP extension does not fully remove outdated files on the Raspberry Pi, you can use `rsync` from your terminal for a full sync:
+
+```bash
+rsync -avz --delete ./ pi@<raspberry_pi_ip>:/home/pi/dehum/
+```
+
+- Replace `<raspberry_pi_ip>` with the actual IP address of your Raspberry Pi.
+- This command ensures your Pi's `dehum` folder exactly mirrors your local folder.
+- The `--delete` flag removes any files from the Pi that no longer exist locally.
+
+This method is recommended for precise syncing in development or deployment setups.
+
+## Syncing Files from the Raspberry Pi to Your Local Machine
+
+To fully copy your entire project (including generated data and updated code) from the Raspberry Pi to your local computer, run the following from your local terminal:
+
+```bash
+rsync -avz pi@<raspberry_pi_ip>:/home/pi/dehum/ ./dehum_local/
+```
+
+- Replace `<raspberry_pi_ip>` with your Raspberry Pi’s IP address.
+- This command will download the Pi’s `/home/pi/dehum` folder into a local directory called `dehum_local`.
+
+If you want to ensure your local folder exactly matches what’s on the Pi (deleting extra local files):
+
+```bash
+rsync -avz --delete pi@<raspberry_pi_ip>:/home/pi/dehum/ ./dehum_local/
+```
+
+---
 
 ## License
 This project is for research use under the NIST initiative.

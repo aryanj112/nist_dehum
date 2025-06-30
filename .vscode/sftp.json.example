@@ -10,7 +10,8 @@
     "ignore": [
         ".vscode",
         ".git",
-        "node_modules"
+        "node_modules",
+        ".venv"
     ],
     "protocol": "sftp"
 }
