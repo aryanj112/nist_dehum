@@ -13,5 +13,5 @@ DRIP_CONFIG = {
 
 drip = DRIP(**DRIP_CONFIG)
 
-drip.run_all(iterations=10, infinite=True, sleep=0)
+drip.run_all(iterations=2, infinite=False, sleep=0)
 drip.close_sensors()

@@ -54,7 +54,7 @@ class DRIP:
         err = self.hx711_sensor.reset()
         while err:
             print('not ready')
-            time.sleep(1)
+            err = self.hx711_sensor.reset()
         print('Ready to use')
 
         self.hx711_sensor.set_gain_A(gain=64)
@@ -144,12 +144,13 @@ class DRIP:
         return output
 
     def run_all(self, iterations = 50, infinite = False, sleep = 2):
+        output = {}
         iteration = 1
         if infinite:
             while infinite:
                 start_time = time.time()
                 print(f"\n--- Iteration {iteration} ---")
-                self.run_hx711(print_out = True)
+                output.update(self.run_hx711(print_out = True))
                 self.run_si7021(print_out = True)
                 self.run_pzem(print_out = True)
                 end_time = time.time()
@@ -168,9 +169,8 @@ class DRIP:
                 time.sleep(sleep)
                 iteration = i
 
-        output = f"\n----- Successfully ran {iteration} iterations -----"
+        print(f"\n----- Successfully ran {iteration} iterations -----")
         print(output)
-
         return output
 
     def close_sensors(self):
