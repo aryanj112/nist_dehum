@@ -2,3 +2,5 @@ data_test.csv
 .vscode/sftp.json
 __pycache__/
 *.pyc
+.DS_Store
+*.sw?
