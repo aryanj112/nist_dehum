@@ -10,7 +10,7 @@ from hx711 import HX711
 import time
 
 class DRIP:
-    def __init__(self, drip_id, si7021_i2c_bus, pzem_interface_path = "/dev/ttyS0", hx711_pins = (3, 2), hx711_readings = 45, hx711_offset = -4143700, hx711_ratio = 105.521408839779):
+    def __init__(self, drip_id, si7021_i2c_bus, pzem_interface_path = "/dev/ttyS0", hx711_pins = (3, 2), hx711_readings = 45, hx711_offset = -4143700, hx711_ratio = 105.521408839779, file_export = "data.csv"):
         self.drip_id = drip_id
         self.si7021_i2c_bus = si7021_i2c_bus
         self.pzem_interface_path = pzem_interface_path
@@ -19,7 +19,7 @@ class DRIP:
         self.hx711_readings = hx711_readings
         self.hx711_offset = hx711_offset
         self.hx711_ratio = hx711_ratio
-        
+        self.file_export = file_export
         # Sensor object initializations
         self.hx711_sensor = None
         self.si7021_sensor = None
@@ -144,36 +144,52 @@ class DRIP:
         return output
 
     def run_all(self, iterations = 50, infinite = False, sleep = 2):
-        output = {}
         iteration = 1
-        if infinite:
-            while infinite:
+        i = 1
+        records = []
+
+        try:
+            while i < (iterations + 1) or infinite:
                 start_time = time.time()
                 print(f"\n--- Iteration {iteration} ---")
-                output.update(self.run_hx711(print_out = True))
-                self.run_si7021(print_out = True)
-                self.run_pzem(print_out = True)
+                row = self.run_hx711(print_out = True)
+                row.update(self.run_si7021(print_out = True))
+                row.update(self.run_pzem(print_out = True))
+                records.append(row)
                 end_time = time.time()
                 print("\nTime elapsed: ", end_time-start_time)
                 time.sleep(sleep)
                 iteration += 1
-        else:
-            for i in range(1, iterations + 1, 1):
-                start_time = time.time()
-                print(f"\n--- Iteration {i} ---")
-                self.run_hx711(print_out = True)
-                self.run_si7021(print_out = True)
-                self.run_pzem(print_out = True)
-                end_time = time.time()
-                print(f"\nTime elapsed: {end_time-start_time:.2f}")
-                time.sleep(sleep)
-                iteration = i
+                if not infinite:
+                    i += 1
+        except KeyboardInterrupt:
+            print("\nKeyboardInterrupt detected. Exiting gracefully...")
+        finally:
+            print(f"\n----- Successfully ran {iteration - 1} iterations -----")
+            if infinite:
+                print('\n--- Closing sensors ---')
+                self.close_sensors()
+            
 
-        print(f"\n----- Successfully ran {iteration} iterations -----")
-        print(output)
-        return output
+
+
+            return records   
 
     def close_sensors(self):
         self.pzem_sensor.close()
-        self.hx711_sensor.GPIO.cleanup()
-        print("\n----- closed all sensors -----")
+        GPIO.cleanup()
+        print("\n----- Closed all sensors -----")
+
+if __name__ == '__main__':
+    DRIP_CONFIG = {
+        'drip_id': 2,
+        'si7021_i2c_bus': 10,
+        'pzem_interface_path': '/dev/ttyS0',
+        'hx711_pins': (3, 2),
+        'hx711_readings': 45,
+        'hx711_offset': -4143700,
+        'hx711_ratio': 105.521408839779
+    }
+
+    drip = DRIP(**DRIP_CONFIG)
+    drip.run_all(iterations=50, infinite=True, sleep=0)
