@@ -9,6 +9,7 @@ import RPi.GPIO as GPIO
 from hx711 import HX711
 import time
 import csv
+from datetime import datetime
 
 class DRIP:
     def __init__(self, drip_id, si7021_i2c_bus, pzem_interface_path = "/dev/ttyS0", hx711_pins = (3, 2), hx711_readings = 45, hx711_offset = -4143700, hx711_ratio = 105.521408839779, file_export = 'data.csv'):
@@ -149,13 +150,14 @@ class DRIP:
         iteration = 1
         i = 1
         records = []
-        fieldnames = []
+        fields = ['Time', 'Grams', 'Temperature', 'Humidity', 'Voltage', 'Current', 'Power', 'Energy', 'Frequency', 'Power_Factor', 'Threshold', 'Alarm_Status']
 
         try:
             while i < (iterations + 1) or infinite:
                 start_time = time.time()
                 print(f"\n--- Iteration {iteration} ---")
-                row = self.run_hx711(print_out = True)
+                row = {'Time': datetime.now()}
+                row.update(self.run_hx711(print_out = True))
                 row.update(self.run_si7021(print_out = True))
                 row.update(self.run_pzem(print_out = True))
                 records.append(row)
@@ -169,10 +171,8 @@ class DRIP:
             print("\n--- KeyboardInterrupt detected. Exiting gracefully ---")
         finally:
             print(f"\n----- Successfully ran {iteration - 1} iterations -----")
-            
-            print(f'--- exporting data ---')
             with open(self.file_export, 'w', newline = '') as f:
-                writer = csv.DictWriter(f, fieldnames = row.keys())
+                writer = csv.DictWriter(f, fieldnames = fields)
                 print(row.keys())
                 writer.writeheader()
                 writer.writerow(row)
@@ -180,10 +180,8 @@ class DRIP:
                     writer.writerow(record)
 
             print(f'--- exported data to {self.file_export}')
-            print('--- closing sensors ---')
             if infinite:
                 self.close_sensors()
-
             return records   
 
     def close_sensors(self):
