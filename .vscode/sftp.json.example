@@ -1,0 +1,16 @@
+{
+    "name": "drip",
+    "host": "",
+    "username": "",
+    "password": "",
+    "remotePath": "/home/pi/",
+    "uploadOnSave": true,
+    "downloadOnOpen": false,
+    "syncMode": "full",
+    "ignore": [
+        ".vscode",
+        ".git",
+        "node_modules"
+    ],
+    "protocol": "sftp"
+}
