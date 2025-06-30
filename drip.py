@@ -5,8 +5,6 @@ import adafruit_si7021
 import modbus_tk.defines as flags
 from modbus_tk import modbus_rtu
 from serial import Serial
-import RPi.GPIO as GPIO
-from hx711 import HX711
 import time
 import csv
 from datetime import datetime
