@@ -174,7 +174,6 @@ class DRIP:
             with open(self.file_export, 'w', newline = '') as f:
                 writer = csv.DictWriter(f, fieldnames = fields)
                 writer.writeheader()
-                writer.writerow(row)
                 for record in records:
                     writer.writerow(record)
 
@@ -194,7 +193,7 @@ if __name__ == '__main__':
         'si7021_i2c_bus': 10,
         'pzem_interface_path': '/dev/ttyS0',
         'hx711_pins': (3, 2),
-        'hx711_readings':25,
+        'hx711_readings':5,
         'hx711_offset': -4143700,
         'hx711_ratio': 105.521408839779,
         'file_export': "data_test.csv"
