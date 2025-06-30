@@ -8,7 +8,8 @@ DRIP_CONFIG = {
     'hx711_pins': (3, 2),
     'hx711_readings': 45,
     'hx711_offset': -4143700,
-    'hx711_ratio': 105.521408839779
+    'hx711_ratio': 105.521408839779,
+    'file_export': 'data_test.csv'
 }
 
 drip = DRIP(**DRIP_CONFIG)
