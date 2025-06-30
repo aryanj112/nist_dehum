@@ -92,9 +92,3 @@ You can use these methods directly in your own scripts for custom workflows.
 
 ## License
 This project is for research use under the NIST initiative.
-
-"host": "// CMD + SHIFT + P opens command palette
-Then do SFTP: Download Project
-This will download the entire project to the local machine
-To upload files, just save them in the editor
-To upload the entire project, use SFTP: Upload Project
