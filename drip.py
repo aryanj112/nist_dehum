@@ -8,9 +8,12 @@ from serial import Serial
 import time
 import csv
 from datetime import datetime
+from cedargrove_nau7802 import NAU7802
+import board
+
 
 class DRIP:
-    def __init__(self, drip_id, si7021_i2c_bus, pzem_interface_path = "/dev/ttyS0", hx711_pins = (3, 2), hx711_readings = 45, hx711_offset = -4143700, hx711_ratio = 105.521408839779, file_export = 'data.csv'):
+    def __init__(self, drip_id, si7021_i2c_bus, pzem_interface_path = "/dev/ttyS0", hx711_pins = (3, 2), hx711_readings = 45, hx711_offset = -4143700, hx711_ratio = 105.521408839779, nau7802_offset = "-309977", nau7802_ratio = "0.0039372056834247006", nau7802_readings = 15, nau7802_i2c_bus = "1", file_export = 'data.csv'):
         self.drip_id = drip_id
         self.si7021_i2c_bus = si7021_i2c_bus
         self.pzem_interface_path = pzem_interface_path
@@ -19,10 +22,15 @@ class DRIP:
         self.hx711_readings = hx711_readings
         self.hx711_offset = hx711_offset
         self.hx711_ratio = hx711_ratio
+        self.nau7802_offset = nau7802_offset
+        self.nau7802_ratio = nau7802_ratio
+        self.nau7802_readings = nau7802_readings
+        self.nau7802_i2c_bus = nau7802_i2c_bus
         self.file_export = file_export
         
         # Sensor object initializations
         self.hx711_sensor = None
+        self.nau7802_sensor = None
         self.si7021_sensor = None
         self.pzem_sensor = None
 
@@ -31,16 +39,20 @@ class DRIP:
         print(" - DRIP ID:", self.drip_id)
         print(" - Si7021 I2C bus number:", self.si7021_i2c_bus)
         print(" - PZEM-004T interface path:", self.pzem_interface_path)
-        print(f" - HX711 data pin: {self.hx711_out}, HX711 sck pin: {self.hx711_sck}\n")
+        # print(f" - HX711 data pin: {self.hx711_out}, HX711 sck pin: {self.hx711_sck}\n")
+        print(f" - NAU7802 I2C: {self.nau7802_i2c_bus} \n")
         print("-------- starting sensor initialization and resets -------- \n")
-        self.init_hx711()
+        # self.init_hx711()
+        self.init_nau7802()
         self.init_si7021()
         self.init_pzem()
         print("---- all sensors have been initialized and all sensor objects have been created ---- \n")
        
         print("-------- running preliminary test on all sensors --------") 
-        print("--- hx711 ---")
-        self.run_hx711(print_out = True)
+        # print("--- hx711 ---")
+        # self.run_hx711(print_out = True)
+        print("--- nau7802 ---")
+        self.run_nau7802(print_out = True)
         print("\n\n--- si702 ---")
         self.run_si7021(print_out = True)
         print("\n--- pzem ---\n")
@@ -65,6 +77,13 @@ class DRIP:
 
         print(" - HX711 sensor has been initialized with OFFSETTT and RATIO")
 
+    def init_nau7802(self):
+        print("--- Initializing NAU7802 ---")
+        # Instantiate 24-bit load sensor ADC; two channels, default gain of 128
+        self.nau7802_sensor = NAU7802(board.I2C(), address=0x2A, active_channels=2)
+        enabled = self.nau7802_sensor.enable(True)
+        self.nau7802_sensor.channel = 1
+        print(" - NAU7802 sensor has been initialized ")
 
     def init_si7021(self):
         print("--- Initializing Si7021 ---")
@@ -85,6 +104,24 @@ class DRIP:
         self.pzem_sensor = modbus_rtu.RtuMaster(serial_int)
         self.pzem_sensor.set_timeout(2.0)
         self.pzem_sensor.execute(1, flags.WRITE_SINGLE_REGISTER, 1, output_value=threshold)
+        print(" - PZEM-004T sensor has been initialized")
+
+    def run_nau7802(self, print_out = False):
+        
+        sample_sum = 0
+        for _ in range(self.nau7802_readings):
+            while not self.nau7802_sensor.available():
+                pass
+            sample_sum += self.nau7802_sensor.read()
+        raw = int(sample_sum / self.nau7802_readings)
+
+        grams = (raw - self.nau7802_offset) * self.nau7802_ratio
+
+        output = {"Grams": grams}
+
+        if print_out:
+            print(f"\nGrams: {grams:.2f} g", end = "")
+        return output
 
     def run_hx711(self, print_out = False):
         data = self.hx711_sensor.get_weight_mean(self.hx711_readings)
@@ -155,7 +192,8 @@ class DRIP:
                 start_time = time.time()
                 print(f"\n--- Iteration {iteration} ---")
                 row = {'Time': datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-                row.update(self.run_hx711(print_out = True))
+                # row.update(self.run_hx711(print_out = True))
+                row.update(self.run_nau7802(print_out = True))
                 row.update(self.run_si7021(print_out = True))
                 row.update(self.run_pzem(print_out = True))
                 records.append(row)
@@ -194,6 +232,10 @@ if __name__ == '__main__':
         'hx711_readings':5,
         'hx711_offset': -4143700,
         'hx711_ratio': 105.521408839779,
+        'nau7802_offset': -309977,
+        'nau7802_ratio': 0.0039372056834247006, 
+        'nau7802_readings': 15,
+        'nau7802_i2c_bus': 1,
         'file_export': "data_test.csv"
     }
 
