@@ -232,8 +232,8 @@ if __name__ == '__main__':
         'hx711_readings':5,
         'hx711_offset': -4143700,
         'hx711_ratio': 105.521408839779,
-        'nau7802_offset': -309977,
-        'nau7802_ratio': 0.0039372056834247006, 
+        'nau7802_offset': -123617,
+        'nau7802_ratio': 0.005742012349157855, 
         'nau7802_readings': 15,
         'nau7802_i2c_bus': 1,
         'file_export': "data_test.csv"
