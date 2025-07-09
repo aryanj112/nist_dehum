@@ -2,6 +2,7 @@ import time
 import board
 from cedargrove_nau7802 import NAU7802
 import csv
+import os
 
 def read_raw_value(samples=5):
     """Read and average consecutive raw sample values. Return average raw value."""
@@ -59,11 +60,17 @@ finally:
             'Offset': zero_raw,
             'Ratio': scale_factor
         }
+
+        file_path = "nau_calibrate.csv"
+        write_header = not os.path.exists(file_path) or os.stat(file_path).st_size == 0
+
         # with open("nau_calibrate.csv", 'w', newline='') as f:
-        with open("nau_calibrate.csv", 'a', newline='') as f: 
+        with open(file_path, 'a', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=fields)
-            writer.writeheader()
+            if write_header:
+                writer.writeheader()
             writer.writerow(record)
+            
         print("\n Saved calibration to nau_calibrate.csv")
     except Exception as e:
         print(f"Failed to write calibration file: {e}")
