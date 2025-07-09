@@ -22,8 +22,8 @@ class DRIP:
         self.hx711_readings = hx711_readings
         self.hx711_offset = hx711_offset
         self.hx711_ratio = hx711_ratio
-        self.nau7802_offset = nau7802_offset
-        self.nau7802_ratio = nau7802_ratio
+        self.nau7802_offset = int(nau7802_offset)
+        self.nau7802_ratio = float(nau7802_ratio)
         self.nau7802_readings = nau7802_readings
         self.nau7802_i2c_bus = nau7802_i2c_bus
         self.file_export = file_export
@@ -80,7 +80,8 @@ class DRIP:
     def init_nau7802(self):
         print("--- Initializing NAU7802 ---")
         # Instantiate 24-bit load sensor ADC; two channels, default gain of 128
-        self.nau7802_sensor = NAU7802(board.I2C(), address=0x2A, active_channels=2)
+        self.nau7802_sensor = NAU7802(board.I2C(), address=0x2A, active_channels=1)
+        print(self.nau7802_sensor.calibrate("INTERNAL"))
         enabled = self.nau7802_sensor.enable(True)
         self.nau7802_sensor.channel = 1
         print(" - NAU7802 sensor has been initialized ")
@@ -232,12 +233,12 @@ if __name__ == '__main__':
         'hx711_readings':5,
         'hx711_offset': -4143700,
         'hx711_ratio': 105.521408839779,
-        'nau7802_offset': -123617,
-        'nau7802_ratio': 0.005742012349157855, 
-        'nau7802_readings': 15,
+        'nau7802_offset': -489440,
+        'nau7802_ratio': -0.0007049150751308024, 
+        'nau7802_readings': 2,
         'nau7802_i2c_bus': 1,
         'file_export': "data_test.csv"
     }
 
     drip = DRIP(**DRIP_CONFIG)
-    drip.run_all(iterations=50, infinite=True, sleep=0)
+    drip.run_all(iterations=50, infinite=True, sleep=2)
