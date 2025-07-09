@@ -1,6 +1,10 @@
 version = 1
 revision = 2
 requires-python = ">=3.11"
+resolution-markers = [
+    "python_full_version >= '3.12'",
+    "python_full_version < '3.12'",
+]
 
 [[package]]
 name = "adafruit-blinka"
@@ -54,6 +58,21 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/3f/7d/e195d490be8b88f3c321682aab3295c1d731096264b8386fc3ab82f7f154/adafruit_circuitpython_hx711-1.0.7.tar.gz", hash = "sha256:25935ac7bb2cdfe8aba0a887943e921240b687d992a5b63c6cf3fb015db87129", size = 23707, upload-time = "2025-06-17T16:15:23.786Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/52/2b/5c9fff87c78882cc3e4c3185fc4e43d98e1111b31ecda72af533b6b08136/adafruit_circuitpython_hx711-1.0.7-py3-none-any.whl", hash = "sha256:0e32efdd2170a9ee4488e48c2f1f4b494e8bb637c2478fb927ce241165a24561", size = 6005, upload-time = "2025-06-17T16:15:21.881Z" },
+]
+
+[[package]]
+name = "adafruit-circuitpython-register"
+version = "1.10.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "adafruit-blinka" },
+    { name = "adafruit-circuitpython-busdevice" },
+    { name = "adafruit-circuitpython-typing" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/14/7c/4f2879e6dc672b5ae182c7aaef369a4e58bab2785c80a3873c32f55234ea/adafruit_circuitpython_register-1.10.4.tar.gz", hash = "sha256:56be1403e62d5017189b003fc47857337ca8292187cd087cf0757ad4a0ef86b0", size = 29165, upload-time = "2025-06-17T16:39:28.513Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/73/e5/f06bc8d95717179c5f4550ea0cace6ba4fcae49039b1e5080c1b18ef4f4d/adafruit_circuitpython_register-1.10.4-py3-none-any.whl", hash = "sha256:96dd6c7771e9b23ab664068a9403e75ff7fbcb3b05549f6c256e3176ee110765", size = 14823, upload-time = "2025-06-17T16:39:26.773Z" },
 ]
 
 [[package]]
@@ -161,6 +180,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/68/36/29b7b896e83e195fac6d64ccff95c0f24a18ee86e7437a22e60e0331d90a/binho-host-adapter-0.1.6.tar.gz", hash = "sha256:1e6da7a84e208c13b5f489066f05774bff1d593d0f5bf1ca149c2b8e83eae856", size = 10068, upload-time = "2020-06-04T19:38:11.789Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7b/6b/0f13486003aea3eb349c2946b7ec9753e7558b78e35d22c938062a96959c/binho_host_adapter-0.1.6-py3-none-any.whl", hash = "sha256:f71ca176c1e2fc1a5dce128beb286da217555c6c7c805f2ed282a6f3507ec277", size = 10540, upload-time = "2020-06-04T19:38:10.612Z" },
+]
+
+[[package]]
+name = "cedargrove-nau7802"
+version = "2.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "adafruit-blinka" },
+    { name = "adafruit-circuitpython-busdevice" },
+    { name = "adafruit-circuitpython-register" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4f/59/d61a733e245267d8b95f4d7fb3c055e58c1b224c61421ab08d6bfae99b1f/cedargrove_nau7802-2.1.2.tar.gz", hash = "sha256:124bd323fd821e5b6e2a266e5c57b3ded2e8e4ce5043feb4b5bcdb59ec82b9d1", size = 10955422, upload-time = "2025-06-17T16:22:18.04Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9b/db/116bcf0c1462badd883cce219dfed3f6ed18842b74fb4d3d37ceb57490f3/cedargrove_nau7802-2.1.2-py3-none-any.whl", hash = "sha256:1c880d2d51ed09636615e40312a80651f0c91e9ba0f1ba2426c268c02652f135", size = 7667, upload-time = "2025-06-17T16:22:16.669Z" },
 ]
 
 [[package]]
@@ -284,6 +317,7 @@ dependencies = [
     { name = "adafruit-circuitpython-si7021" },
     { name = "adafruit-extended-bus" },
     { name = "argparse" },
+    { name = "cedargrove-nau7802" },
     { name = "circup" },
     { name = "modbus-tk" },
     { name = "rpi-gpio" },
@@ -299,6 +333,7 @@ requires-dist = [
     { name = "adafruit-circuitpython-si7021", specifier = ">=4.1.16" },
     { name = "adafruit-extended-bus", specifier = ">=1.0.2" },
     { name = "argparse", specifier = ">=1.4.0" },
+    { name = "cedargrove-nau7802", specifier = ">=2.1.2" },
     { name = "circup", specifier = ">=2.2.2" },
     { name = "modbus-tk", specifier = ">=1.1.5" },
     { name = "rpi-gpio", specifier = ">=0.7.1" },

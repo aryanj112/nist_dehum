@@ -9,6 +9,7 @@ dependencies = [
     "adafruit-circuitpython-si7021>=4.1.16",
     "adafruit-extended-bus>=1.0.2",
     "argparse>=1.4.0",
+    "cedargrove-nau7802>=2.1.2",
     "circup>=2.2.2",
     "modbus-tk>=1.1.5",
     "rpi-gpio>=0.7.1",
