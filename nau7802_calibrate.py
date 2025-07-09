@@ -3,6 +3,7 @@ import board
 from cedargrove_nau7802 import NAU7802
 import csv
 import os
+import pandas as pd
 
 def read_raw_value(samples=5):
     """Read and average consecutive raw sample values. Return average raw value."""
